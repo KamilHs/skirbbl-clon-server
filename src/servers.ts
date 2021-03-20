@@ -8,10 +8,10 @@ export const io = new socketIO.Server();
 const server = require("http").createServer(app);
 
 app.use(
-  cors({
-    origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
-    credentials: true,
-  })
+    cors({
+        origin: process.env.ALLOWED_ORIGIN || "http://localhost:3000",
+        credentials: true,
+    })
 );
 app.use(helmet());
 
