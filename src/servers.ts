@@ -16,4 +16,4 @@ app.use(
 app.use(helmet());
 
 io.listen(server);
-app.listen(process.env.PORT || 5555);
+server.listen(process.env.PORT || 5555);
