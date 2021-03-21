@@ -1,6 +1,6 @@
 import { app } from "../servers";
 
-import games from "../games";
+import rooms from "../rooms";
 
 app.get("/is_valid", (req, res) => {
     const id = req.query.id?.toString();
@@ -8,7 +8,7 @@ app.get("/is_valid", (req, res) => {
         return res.json({ isValidId: false });
     }
 
-    return res.json({ isValidId: id in games });
+    return res.json({ isValidId: id in rooms });
 });
 
 export default app;
