@@ -26,6 +26,10 @@ class Game {
                     : PlayerType.member,
         }));
     }
+
+    addPlayer(player: Player) {
+        this.players.push(player);
+    }
 }
 
 export default Game;
