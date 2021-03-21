@@ -10,12 +10,12 @@ class Game {
     private currentPlayer: Player | null = null;
     private currentWord: string | null = null;
     private currentRound: number = 0;
+    private isStarted: boolean = false;
     constructor(
         private creator: Player,
-        private players: Player,
+        private players: Player[],
         private id: string,
-        private config: IGameConfig,
-        private isStarted: boolean
+        private config: IGameConfig
     ) {}
 }
 
