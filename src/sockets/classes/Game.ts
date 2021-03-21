@@ -53,7 +53,7 @@ class Game {
         return this.isStarted;
     }
 
-    setIsStarted(isStarted) {
+    setIsStarted(isStarted:boolean) {
         this.isStarted = isStarted;
     }
 }
