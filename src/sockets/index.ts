@@ -3,7 +3,7 @@ import Game from "./classes/Game";
 import Player from "./classes/Player";
 import idGenerator from "../utils/idGenerator";
 import { io } from "../servers";
-import { CREATE_ROOM, GET_PLAYERS_DATA, JOIN_ROOM } from "./types";
+import { CREATE_ROOM, GET_PLAYERS_DATA, JOIN_ROOM, START_GAME } from "./types";
 
 const emitPlayersData = async (roomId: string) => {
     const socketIds = await io.in(roomId).allSockets();
@@ -23,7 +23,7 @@ const emitPlayersData = async (roomId: string) => {
 };
 
 io.on("connection", (socket) => {
-    socket.on(CREATE_ROOM, (data) => {
+    socket.on(CREATE_ROOM, ({ nickname }) => {
         console.log("create room");
         if (Object.keys(rooms).length >= ROOMS_LIMIT) {
             socket.emit(CREATE_ROOM, {
@@ -32,7 +32,6 @@ io.on("connection", (socket) => {
             });
         } else {
             const id = idGenerator(20);
-            const { nickname } = data;
             const creator = new Player(socket, nickname, 0);
             rooms[id] = new Game(creator, [creator], id, GAME_CONFIG);
             socket.join(id);
@@ -42,9 +41,8 @@ io.on("connection", (socket) => {
             emitPlayersData(id);
         }
     });
-    socket.on(JOIN_ROOM, (data) => {
+    socket.on(JOIN_ROOM, ({ id, nickname }) => {
         console.log("join room");
-        const { id, nickname } = data;
         if (id in rooms) {
             rooms[id].addPlayer(new Player(socket, nickname, 0));
             socket.join(id);
@@ -57,6 +55,13 @@ io.on("connection", (socket) => {
                 error: true,
                 message: "Invalid room",
             });
+        }
+    });
+    socket.on(START_GAME, ({ roomId }) => {
+        const room = rooms[roomId];
+        if (room && room.isCreator(socket) && !room.getIsStarted()) {
+            room.setIsStarted(true);
+            io.in(roomId).emit(START_GAME);
         }
     });
     socket.on("disconnecting", async () => {

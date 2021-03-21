@@ -48,6 +48,14 @@ class Game {
     getPlayersCount() {
         return this.players.length;
     }
+
+    getIsStarted() {
+        return this.isStarted;
+    }
+
+    setIsStarted(isStarted) {
+        this.isStarted = isStarted;
+    }
 }
 
 export default Game;
