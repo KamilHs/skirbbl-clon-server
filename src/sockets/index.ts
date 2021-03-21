@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
         const room = rooms[roomId];
         if (room && room.isCreator(socket) && !room.getIsStarted()) {
             room.setIsStarted(true);
-            io.in(roomId).emit(START_GAME);
+            io.in(roomId).emit(START_GAME, roomId);
         }
     });
     socket.on("disconnecting", async () => {
