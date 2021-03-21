@@ -26,6 +26,7 @@ class Game {
                 player.getSocket().id === this.creator.getSocket().id
                     ? PlayerType.admin
                     : PlayerType.member,
+            isDrawer: this.isStarted && this.currentPlayer === player,
         }));
     }
 
@@ -61,6 +62,10 @@ class Game {
         return this.players.find(
             (player) => player.getSocket().id === socket.id
         );
+    }
+
+    getCurrentPlayer() {
+        return this.currentPlayer;
     }
 }
 

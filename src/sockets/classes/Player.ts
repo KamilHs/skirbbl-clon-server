@@ -8,6 +8,8 @@ export enum PlayerType {
 export interface IPlayerData {
     nickname: string;
     role: PlayerType;
+    score: number;
+    isDrawer: boolean;
     socket: Socket;
 }
 
@@ -23,6 +25,8 @@ class Player {
             nickname: this.nickname,
             role: PlayerType.member,
             socket: this.socket,
+            score: this.score,
+            isDrawer: false,
         };
     }
 

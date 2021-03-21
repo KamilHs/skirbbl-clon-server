@@ -16,7 +16,8 @@ import {
 
 const emitPlayersData = async (roomId: string) => {
     const socketIds = await io.in(roomId).allSockets();
-    const playersData = rooms[roomId]?.getPlayersWithRoles();
+    const playersData = rooms[roomId].getPlayersWithRoles();
+
     Array.from(socketIds).forEach((socketId) => {
         io.of("/")
             .sockets.get(socketId)
@@ -26,6 +27,8 @@ const emitPlayersData = async (roomId: string) => {
                     nickname: data.nickname,
                     role: data.role,
                     isMe: data.socket.id === socketId,
+                    score: data.score,
+                    isDrawer: data.isDrawer,
                 }))
             );
     });
