@@ -29,6 +29,10 @@ class Player {
     getSocket() {
         return this.socket;
     }
+
+    getNickName() {
+        return this.nickname;
+    }
 }
 
 export default Player;

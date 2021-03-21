@@ -3,7 +3,16 @@ import Game from "./classes/Game";
 import Player from "./classes/Player";
 import idGenerator from "../utils/idGenerator";
 import { io } from "../servers";
-import { CREATE_ROOM, GET_PLAYERS_DATA, JOIN_ROOM, START_GAME } from "./types";
+import {
+    CREATE_ROOM,
+    GET_PLAYERS_DATA,
+    JOIN_ROOM,
+    SEND_MESSAGE,
+    START_GAME,
+    IMessage,
+    MessageType,
+    GET_MESSAGE,
+} from "./types";
 
 const emitPlayersData = async (roomId: string) => {
     const socketIds = await io.in(roomId).allSockets();
@@ -62,6 +71,22 @@ io.on("connection", (socket) => {
         if (room && room.isCreator(socket) && !room.getIsStarted()) {
             room.setIsStarted(true);
             io.in(roomId).emit(START_GAME, roomId);
+        }
+    });
+    socket.on(SEND_MESSAGE, ({ message }) => {
+        const roomId = Array.from(socket.rooms.values()).pop() || "";
+        const room = rooms[roomId];
+        if (room) {
+            const author = room.getPlayer(socket);
+            if (author) {
+                const newMessage: IMessage = {
+                    id: Math.random().toString(),
+                    content: message,
+                    type: MessageType.guessing,
+                    authorName: author.getNickName(),
+                };
+                io.in(roomId).emit(GET_MESSAGE, newMessage);
+            }
         }
     });
     socket.on("disconnecting", async () => {

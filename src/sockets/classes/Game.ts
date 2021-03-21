@@ -56,6 +56,12 @@ class Game {
     setIsStarted(isStarted: boolean) {
         this.isStarted = isStarted;
     }
+
+    getPlayer(socket: Socket) {
+        return this.players.find(
+            (player) => player.getSocket().id === socket.id
+        );
+    }
 }
 
 export default Game;
