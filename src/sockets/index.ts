@@ -7,7 +7,7 @@ import { CREATE_ROOM, GET_PLAYERS_DATA, JOIN_ROOM } from "./types";
 
 const emitPlayersData = async (roomId: string) => {
     const socketIds = await io.in(roomId).allSockets();
-    const playersData = rooms[roomId].getPlayersWithRoles();
+    const playersData = rooms[roomId]?.getPlayersWithRoles();
     Array.from(socketIds).forEach((socketId) => {
         io.of("/")
             .sockets.get(socketId)
@@ -23,7 +23,6 @@ const emitPlayersData = async (roomId: string) => {
 };
 
 io.on("connection", (socket) => {
-    console.log(socket.id);
     socket.on(CREATE_ROOM, (data) => {
         console.log("create room");
         if (Object.keys(rooms).length >= ROOMS_LIMIT) {
@@ -43,7 +42,7 @@ io.on("connection", (socket) => {
             emitPlayersData(id);
         }
     });
-    socket.on(JOIN_ROOM, async (data) => {
+    socket.on(JOIN_ROOM, (data) => {
         console.log("join room");
         const { id, nickname } = data;
         if (id in rooms) {
@@ -58,6 +57,19 @@ io.on("connection", (socket) => {
                 error: true,
                 message: "Invalid room",
             });
+        }
+    });
+    socket.on("disconnecting", async () => {
+        const roomId = Array.from(socket.rooms.values()).pop() || "";
+        const isCreator = rooms[roomId]?.isCreator(socket);
+        rooms[roomId]?.removePlayer(socket);
+        if (rooms[roomId]?.getPlayersCount() === 0) {
+            delete rooms[roomId];
+        } else {
+            if (isCreator) {
+                rooms[roomId]?.updateCreator();
+            }
+            emitPlayersData(roomId);
         }
     });
 });

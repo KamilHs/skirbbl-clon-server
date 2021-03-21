@@ -1,3 +1,5 @@
+import { Socket } from "socket.io";
+
 import Player, { IPlayerData, PlayerType } from "./Player";
 
 export interface IGameConfig {
@@ -29,6 +31,22 @@ class Game {
 
     addPlayer(player: Player) {
         this.players.push(player);
+    }
+    removePlayer(socket: Socket) {
+        this.players = this.players.filter(
+            (player) => player.getSocket().id !== socket.id
+        );
+    }
+
+    isCreator(socket: Socket) {
+        return socket.id === this.creator.getSocket().id;
+    }
+    updateCreator() {
+        this.creator = this.players[0] || null;
+    }
+
+    getPlayersCount() {
+        return this.players.length;
     }
 }
 
