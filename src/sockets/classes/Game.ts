@@ -19,7 +19,7 @@ class Game {
 
     getPlayersWithRoles(): IPlayerData[] {
         return this.players.map((player) => ({
-            nickname: player.getNickname(),
+            ...player.getPlayerData(),
             role:
                 player.getSocket().id === this.creator.getSocket().id
                     ? PlayerType.admin
