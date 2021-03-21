@@ -50,6 +50,9 @@ io.on("connection", (socket) => {
             rooms[id].addPlayer(new Player(socket, nickname, 0));
             socket.join(id);
             emitPlayersData(id);
+            socket.emit(JOIN_ROOM, {
+                roomId: id,
+            });
         } else {
             socket.emit(JOIN_ROOM, {
                 error: true,
